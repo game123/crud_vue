@@ -1,27 +1,43 @@
+/* eslint-disable quotes */ /* eslint-disable quotes */ /* eslint-disable quotes */ /*
+eslint-disable quotes */
 <template>
   <div class="grid-container">
-    <app-header class="header-title"></app-header>
+    <app-header class="header-title" v-bind:title="title"></app-header>
     <app-navigation class="navigation-links"></app-navigation>
     <app-content class="data-content"></app-content>
-    <app-footer class="footer"></app-footer>
+    <app-footer class="footer" v-bind:footerMessage="footer"></app-footer>
   </div>
 </template>
 
 <script>
-import Header from "@/components/Header.vue";
-import Navigation from "@/components/Navigation.vue";
-import Content from "@/components/Content.vue";
-import Footer from "@/components/Footer.vue";
+// eslint-disable-next-line quotes
+import Header from "@/components/Header.vue"
+// eslint-disable-next-line quotes
+import Navigation from "@/components/Navigation.vue"
+// eslint-disable-next-line quotes
+import Content from "@/components/Content.vue"
+// eslint-disable-next-line quotes
+import Footer from "@/components/Footer.vue"
+import { ref } from '@vue/reactivity'
 
 export default {
-  name: "App",
+  name: 'App',
   components: {
-    "app-header": Header,
-    "app-navigation": Navigation,
-    "app-content": Content,
-    "app-footer": Footer
+    'app-header': Header,
+    'app-navigation': Navigation,
+    'app-content': Content,
+    'app-footer': Footer
+    // eslint-disable-next-line comma-dangle
+  },
+  setup () {
+    // eslint-disable-next-line quotes
+    const title = ref('Vue Project (Dynamic)')
+    // eslint-disable-next-line quotes
+    const footer = ref('TestDriven.io 2021')
+
+    return { title, footer }
   }
-};
+}
 </script>
 
 <style>

@@ -5,16 +5,10 @@
 </template>
 
 <script>
-import { ref } from "@vue/reactivity";
-
 export default {
-  name: "Footer",
-  setup() {
-    const footerMessage = ref("TestDriven.io 2021");
-
-    return { footerMessage };
-  }
-};
+  name: 'Footer',
+  props: { footerMessage: String }
+}
 </script>
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
