@@ -10,14 +10,10 @@ eslint-disable quotes */
 </template>
 
 <script>
-// eslint-disable-next-line quotes
-import Header from "@/components/Header.vue"
-// eslint-disable-next-line quotes
-import Navigation from "@/components/Navigation.vue"
-// eslint-disable-next-line quotes
-import Content from "@/components/Content.vue"
-// eslint-disable-next-line quotes
-import Footer from "@/components/Footer.vue"
+import Header from '@/components/Header.vue'
+import Navigation from '@/components/Navigation.vue'
+import Content from '@/components/Content.vue'
+import Footer from '@/components/Footer.vue'
 import { ref } from '@vue/reactivity'
 
 export default {
