@@ -29,7 +29,7 @@ export default {
     // eslint-disable-next-line quotes
     const title = ref('Vue Project (Dynamic)')
     // eslint-disable-next-line quotes
-    const footer = ref('TestDriven.io 2021')
+    const footer = ref('KC Side Project Vue#1 2021')
 
     return { title, footer }
   }

@@ -7,11 +7,11 @@ describe('Footer.vue Test', () => {
     // render the component
     const wrapper = shallowMount(Footer, {
       props: {
-        footerMessage: 'TestDriven.io 2021'
+        footerMessage: 'KC Side Project Vue#1 2021'
       }
     })
 
     // check that the title is rendered
-    expect(wrapper.text()).toMatch('TestDriven.io 2021')
+    expect(wrapper.text()).toMatch('KC Side Project Vue#1 2021')
   })
 })
