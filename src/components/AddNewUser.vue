@@ -28,12 +28,17 @@ export default {
     })
 
     const addNewUser = () => {
-      context.emit('create-user', user.value)
-
-      // Clear the variables used for reading in the new user's info
-      user.value.name = ''
-      user.value.username = ''
-      user.value.email = ''
+      if ((user.value.name !== '') && (user.value.username !== '') && (user.value.email !== '')) {
+        context.emit('create-user', {
+          name: user.value.name,
+          username: user.value.username,
+          email: user.value.email
+        })
+        // Clear the variables used for reading in the new user's info
+        user.value.name = ''
+        user.value.username = ''
+        user.value.email = ''
+      }
     }
 
     return { user, addNewUser }
