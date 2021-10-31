@@ -65,7 +65,7 @@ describe('AddNewUser.vue Test', () => {
     expect(emailInput.element.value).toBe('')
   })
 
-  it('dose not emit an event when a new user without data is added', async () =>{
+  it('dose not emit an event when a new user without data is added', async () => {
     // don't set the input data for the user
 
     // trigger an event when the 'Submit' button is clicked

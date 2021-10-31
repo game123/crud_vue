@@ -2,14 +2,17 @@
   <div class="content-container">
     <h1>List of Users:</h1>
     <br />
-    <app-list-users v-bind:users="users"></app-list-users>
+    <app-list-users v-bind:users="users" v-if="showUsers"></app-list-users>
     <app-add-new-user v-on:create-user="createUser"></app-add-new-user>
+    <button v-on:click="deleteListOfUsers">Delete the List of Users!</button>
   </div>
 </template>
+
 <script>
 import { ref } from '@vue/reactivity'
 import ListUsers from './ListUsers.vue'
 import AddNewUser from './AddNewUser.vue'
+import { onBeforeMount, onBeforeUnmount, onMounted, onUnmounted } from '@vue/runtime-core'
 
 export default {
   name: 'Content',
@@ -39,6 +42,7 @@ export default {
         email: 'email3@gmail.com'
       }
     ])
+    const showUsers = ref(true)
 
     const createUser = (user) => {
       // Check that all fields are filled in before adding the user
@@ -55,8 +59,26 @@ export default {
       }
     }
 
-    return { message, users, createUser }
+    const deleteListOfUsers = () => {
+      showUsers.value = false
+    }
+
+    onBeforeMount(() => {
+      console.log('Content.vue: onBeforeMount() called!')
+    })
+    onMounted(() => {
+      console.log('Content.vue: onMounted() called!')
+    })
+    onBeforeUnmount(() => {
+      console.log('Content.vue: onBeforeUnmount() called!')
+    })
+    onUnmounted(() => {
+      console.log('Content.vue: onUnmounted() called!')
+    })
+
+    return { message, users, createUser, showUsers, deleteListOfUsers }
   }
+
 }
 </script>
 
@@ -66,4 +88,5 @@ export default {
   padding: 1em;
   min-width: 500px;
 }
+
 </style>

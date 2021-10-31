@@ -15,6 +15,7 @@ import Navigation from '@/components/Navigation.vue'
 import Content from '@/components/Content.vue'
 import Footer from '@/components/Footer.vue'
 import { ref } from '@vue/reactivity'
+import { onBeforeMount, onBeforeUnmount, onMounted, onUnmounted } from '@vue/runtime-core'
 
 export default {
   name: 'App',
@@ -30,6 +31,19 @@ export default {
     const title = ref('Vue Project (Dynamic)')
     // eslint-disable-next-line quotes
     const footer = ref('KC Side Project Vue#1 2021')
+
+    onBeforeMount(() => {
+      console.log('App.vue: onBeforeMount() called!')
+    })
+    onMounted(() => {
+      console.log('App.vue: onMounted() called!')
+    })
+    onBeforeUnmount(() => {
+      console.log('App.vue: onBeforeUnmount() called!')
+    })
+    onUnmounted(() => {
+      console.log('App.vue: onUnmounted() called!')
+    })
 
     return { title, footer }
   }
