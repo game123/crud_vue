@@ -1,5 +1,6 @@
 <template>
   <div class="content-container">
+    <app-banner v-bind:bannerMessage="messageToDisplay" v-bind:bannerType="messageType" v-on:clear-banner="clearMessage"></app-banner>
     <h1>List of Users:</h1>
     <br />
     <app-list-users v-bind:users="users" v-if="showUsers"></app-list-users>
@@ -12,37 +13,31 @@
 import { ref } from '@vue/reactivity'
 import ListUsers from './ListUsers.vue'
 import AddNewUser from './AddNewUser.vue'
+import Banner from './Banner.vue'
 import { onBeforeMount, onBeforeUnmount, onMounted, onUnmounted } from '@vue/runtime-core'
+import axios from 'axios'
 
 export default {
   name: 'Content',
   components: {
     'app-list-users': ListUsers,
-    'app-add-new-user': AddNewUser
+    'app-add-new-user': AddNewUser,
+    'app-banner': Banner
   },
   setup () {
     const message = ref('Content goes here!')
-    const users = ref([
-      {
-        id: 1,
-        name: 'User #1',
-        username: 'user_1',
-        email: 'email1@gmail.com'
-      },
-      {
-        id: 2,
-        name: 'User #2',
-        username: 'user_2',
-        email: 'email2@gmail.com'
-      },
-      {
-        id: 3,
-        name: 'User #3',
-        username: 'user_3',
-        email: 'email3@gmail.com'
-      }
-    ])
+    const users = ref([])
+
     const showUsers = ref(true)
+    // Message to display on banner
+    const messageToDisplay = ref('')
+    // Message type (Info, Success, or Error) to display on banner
+    const messageType = ref('Info')
+
+    const clearMessage = () => {
+      messageToDisplay.value = ''
+      messageType.value = 'Info'
+    }
 
     const createUser = (user) => {
       // Check that all fields are filled in before adding the user
@@ -68,6 +63,30 @@ export default {
     })
     onMounted(() => {
       console.log('Content.vue: onMounted() called!')
+
+      axios.get('https://jsonplaceholder.typicode.com/users')
+        .then((response) => {
+          // handle success
+          messageType.value = 'Success'
+          messageToDisplay.value = 'SUCCESS! Loaded user data!'
+          // console.log('Received response:')
+          // console.log(response)
+
+          users.value = response.data
+
+          console.log('Users array in success callback:')
+          console.log(users.value)
+        })
+        .catch((error) => {
+          // handle error
+          messageType.value = 'Error'
+          messageToDisplay.value = 'Error! Unable to load user data!'
+          console.log(error)
+        })
+        .finally((response) => {
+          // always executed
+          console.log('Finished!')
+        })
     })
     onBeforeUnmount(() => {
       console.log('Content.vue: onBeforeUnmount() called!')
@@ -76,7 +95,7 @@ export default {
       console.log('Content.vue: onUnmounted() called!')
     })
 
-    return { message, users, createUser, showUsers, deleteListOfUsers }
+    return { message, users, createUser, showUsers, deleteListOfUsers, messageToDisplay, messageType, clearMessage }
   }
 
 }

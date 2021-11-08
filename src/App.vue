@@ -1,5 +1,3 @@
-/* eslint-disable quotes */ /* eslint-disable quotes */ /* eslint-disable quotes */ /*
-eslint-disable quotes */
 <template>
   <div class="grid-container">
     <app-header class="header-title" v-bind:title="title"></app-header>
