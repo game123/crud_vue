@@ -21,11 +21,21 @@ export default createStore({
   // mutations are operations that change the state.
   // mutations must be synchronous and should be called by actions
   mutations: {
+    setBannerMessage: (state, payload) => {
+      state.bannerMessage = payload
+    },
+    setBannerType: (state, payload) => {
+      state.bannerType = payload
+    }
   },
 
   // actions are functions that commit mutations. actions can involve
   // asynchronous operations.
   actions: {
+    setBanner: (context, payload) => {
+      context.commit('setBannerMessage', payload.message)
+      context.commit('setBannerType', payload.type)
+    }
   },
 
   // modules allow for dividing the Vuex store into manageable pieces

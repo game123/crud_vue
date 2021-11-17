@@ -2,7 +2,7 @@ import store from '@/store/index'
 
 describe('Vuex Store Test', () => {
   it('initializes with correct values', () => {
-    expect(store.state.bannerMessage).toMatch('^$/')
+    expect(store.state.bannerMessage).toMatch(/^$/)
     expect(store.state.bannerType).toMatch('Info')
   })
 
