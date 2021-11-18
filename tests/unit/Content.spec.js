@@ -1,9 +1,3 @@
-/* eslint-disable eol-last */
-/* eslint-disable semi */
-/* eslint-disable object-curly-spacing */
-/* eslint-disable no-trailing-spaces */
-/* eslint-disable object-curly-newline */
-/* eslint-disable camelcase */
 import { shallowMount, flushPromises } from '@vue/test-utils'
 import Content from '@/components/Content.vue'
 import axios from 'axios'
@@ -19,56 +13,64 @@ describe('Content.vue Test with Successful HTTP GET, POST, DELETE, and PUT', () 
   let mockStore = null
 
   beforeEach(() => {
-    const mock_get_response = { data: [
-      {
-        id: 1,
-        name: 'Leanne Graham',
-        username: 'Bret',
-        email: 'Sincere@april.biz'
-      },
-      {
-        id: 2,
-        name: 'Ervin Howell',
-        username: 'Antonette',
-        email: 'Shanna@melissa.tv'
-      }
-    ]}
+    const mockGetResponse = {
+      data: [
+        {
+          id: 1,
+          name: 'Leanne Graham',
+          username: 'Bret',
+          email: 'Sincere@april.biz'
+        },
+        {
+          id: 2,
+          name: 'Ervin Howell',
+          username: 'Antonette',
+          email: 'Shanna@melissa.tv'
+        }
+      ]
+    }
 
-    const mock_post_response = { data: [
-      {
-        id: 3,
-        name: 'Patrick',
-        username: 'patrick123',
-        email: 'patrick@email.com'
-      }
-    ] }
+    const mockPostResponse = {
+      data: [
+        {
+          id: 3,
+          name: 'Patrick',
+          username: 'patrick123',
+          email: 'patrick@email.com'
+        }
+      ]
+    }
 
-    const mock_delete_response = { data: [
-      {
-        id: 2
-      }
-    ] }
-  
-    const mock_put_response = { data: [
-      {
-        id: 1,
-        name: 'Patrick',
-        username: 'patrick456',
-        email: 'patrick@email.com'
-      }
-    ] }
+    const mockDeleteResponse = {
+      data: [
+        {
+          id: 2
+        }
+      ]
+    }
+
+    const mockPutResponse = {
+      data: [
+        {
+          id: 1,
+          name: 'Patrick',
+          username: 'patrick456',
+          email: 'patrick@email.com'
+        }
+      ]
+    }
 
     // Set the mock call to GET to return a successful GET response
-    axios.get.mockResolvedValue(mock_get_response)
+    axios.get.mockResolvedValue(mockGetResponse)
 
     // Set the mock call to POST to return a successful POST request
-    axios.post.mockResolvedValue(mock_post_response);
+    axios.post.mockResolvedValue(mockPostResponse)
 
     // Set the mock call to DELETE to return a successful DELETE request
-    axios.delete.mockResolvedValue(mock_delete_response);
+    axios.delete.mockResolvedValue(mockDeleteResponse)
 
     // Set the mock call to PUT to return a successful PUT response
-    axios.put.mockResolvedValue(mock_put_response)
+    axios.put.mockResolvedValue(mockPutResponse)
 
     // create a mock of the Vuex store
     mockStore = {
@@ -83,13 +85,13 @@ describe('Content.vue Test with Successful HTTP GET, POST, DELETE, and PUT', () 
         }
       }
     })
-  });
+  })
 
   afterEach(() => {
     wrapper.unmount()
     jest.resetModules()
     jest.clearAllMocks()
-  });
+  })
 
   it('loads the user data when the component is created and mounted', async () => {
     // Wait until the DOM updates
@@ -103,7 +105,7 @@ describe('Content.vue Test with Successful HTTP GET, POST, DELETE, and PUT', () 
     // Check that one call was made to axios.get()
     expect(axios.get).toHaveBeenCalledTimes(1)
     expect(axios.get).toBeCalledWith('https://jsonplaceholder.typicode.com/users')
-  
+
     // Check that the user data is properly set
     expect(wrapper.vm.users.length).toEqual(2)
     expect(wrapper.vm.users[0].name).toMatch('Leanne Graham')
@@ -128,16 +130,16 @@ describe('Content.vue Test with Successful HTTP GET, POST, DELETE, and PUT', () 
       email: 'patrick@email.com',
       editing: false
     }
-  
+
     // call the createUser() function with user #3
-    wrapper.vm.createUser(newUser3);
-  
+    wrapper.vm.createUser(newUser3)
+
     // Wait until the DOM updates
     await flushPromises()
 
-    expect(axios.post).toHaveBeenCalledTimes(1);
+    expect(axios.post).toHaveBeenCalledTimes(1)
     expect(axios.post).toBeCalledWith('https://jsonplaceholder.typicode.com/users', newUser3)
-  
+
     expect(wrapper.vm.users.length).toEqual(3)
 
     // check that the banner message indicates success
@@ -156,16 +158,16 @@ describe('Content.vue Test with Successful HTTP GET, POST, DELETE, and PUT', () 
       username: 'Antonette',
       email: 'Shanna@melissa.tv'
     }
-  
+
     // call the createUser() function with user #1
-    wrapper.vm.deleteUser(deleteUser2);
-      
+    wrapper.vm.deleteUser(deleteUser2)
+
     // Wait until the DOM updates
     await flushPromises()
 
-    expect(axios.delete).toHaveBeenCalledTimes(1);
+    expect(axios.delete).toHaveBeenCalledTimes(1)
     expect(axios.delete).toBeCalledWith('https://jsonplaceholder.typicode.com/users/2')
-  
+
     expect(wrapper.vm.users.length).toEqual(1)
 
     // check that the banner message indicates success
@@ -186,16 +188,16 @@ describe('Content.vue Test with Successful HTTP GET, POST, DELETE, and PUT', () 
       email: 'patrick@email.com',
       editing: false
     }
-  
+
     // call the updateUser() function with user #1
     wrapper.vm.updateUser(updateUser1)
-    
+
     // Wait until the DOM updates
     await flushPromises()
 
     expect(axios.put).toHaveBeenCalledTimes(1)
     expect(axios.put).toBeCalledWith('https://jsonplaceholder.typicode.com/users/1')
-  
+
     expect(wrapper.vm.users.length).toEqual(2)
 
     // check that the banner message indicates success
@@ -221,11 +223,11 @@ describe('Content.vue Test with Successful HTTP GET, POST, DELETE, and PUT', () 
 
     // call editUser() for user #1
     wrapper.vm.editUser(user1)
-  
+
     // check that user #1 is now in edit mode
     expect(wrapper.vm.users[0].editing).toBe(true)
   })
-  
+
   it('cancels the user from edit-mode', () => {
     const user1 = {
       id: 1,
@@ -237,10 +239,10 @@ describe('Content.vue Test with Successful HTTP GET, POST, DELETE, and PUT', () 
 
     // set the 'editing' flag to be true for user #1
     wrapper.vm.users[0].editing = true
-  
+
     // call cancelEditUser() for user #1
     wrapper.vm.cancelEditUser(user1)
-  
+
     // check that user #1 is now in edit mode
     expect(wrapper.vm.users[0].editing).toBe(false)
   })
@@ -259,7 +261,7 @@ describe('Content.vue Test with Failed HTTP GET', () => {
       dispatch: jest.fn()
     }
 
-    // Render the component
+    // render the component
     wrapper = shallowMount(Content, {
       global: {
         provide: {
@@ -270,18 +272,19 @@ describe('Content.vue Test with Failed HTTP GET', () => {
   })
 
   afterEach(() => {
-    jest.resetModules();
-    jest.clearAllMocks();
-  });
+    wrapper.unmount()
+    jest.resetModules()
+    jest.clearAllMocks()
+  })
 
-  it('loads no user data when the HTTP GET request fails', async () => {  
+  it('loads no user data when the HTTP GET request fails', async () => {
     // Wait until the DOM updates
     await flushPromises()
 
     // Check that zero calls were made to axios.get()
-    expect(axios.get).toHaveBeenCalledTimes(1);
+    expect(axios.get).toHaveBeenCalledTimes(1)
     expect(axios.get).toBeCalledWith('https://jsonplaceholder.typicode.com/users')
-  
+
     // Check that there is no user data loaded when the GET request fails
     expect(wrapper.vm.users.length).toEqual(0)
 
@@ -297,23 +300,25 @@ describe('Content.vue Test with Successful HTTP GET, Failed HTTP POST, Failed HT
   let mockStore = null
 
   beforeEach(() => {
-    const mock_get_response = { data: [
-      {
-        id: 1,
-        name: 'Leanne Graham',
-        username: 'Bret',
-        email: 'Sincere@april.biz'
-      },
-      {
-        id: 2,
-        name: 'Ervin Howell',
-        username: 'Antonette',
-        email: 'Shanna@melissa.tv'
-      }
-    ]}
-  
+    const mockGetResponse = {
+      data: [
+        {
+          id: 1,
+          name: 'Leanne Graham',
+          username: 'Bret',
+          email: 'Sincere@april.biz'
+        },
+        {
+          id: 2,
+          name: 'Ervin Howell',
+          username: 'Antonette',
+          email: 'Shanna@melissa.tv'
+        }
+      ]
+    }
+
     // Set the mock call to GET to return a successful GET response
-    axios.get.mockResolvedValue(mock_get_response)
+    axios.get.mockResolvedValue(mockGetResponse)
 
     // Set the mock call to POST to return a failed POST request
     axios.post.mockRejectedValue(new Error('BAD CREATE'))
@@ -337,13 +342,13 @@ describe('Content.vue Test with Successful HTTP GET, Failed HTTP POST, Failed HT
         }
       }
     })
-  });
+  })
 
   afterEach(() => {
     wrapper.unmount()
     jest.resetModules()
     jest.clearAllMocks()
-  });
+  })
 
   it('does not save the new user data on failed HTTP POST call', async () => {
     // set the input data for user #3
@@ -354,20 +359,20 @@ describe('Content.vue Test with Successful HTTP GET, Failed HTTP POST, Failed HT
       email: 'patrick@email.com',
       editing: false
     }
-  
-    expect(axios.get).toHaveBeenCalledTimes(1);
+
+    expect(axios.get).toHaveBeenCalledTimes(1)
     expect(axios.get).toBeCalledWith('https://jsonplaceholder.typicode.com/users')
     expect(wrapper.vm.users.length).toEqual(2)
-  
+
     // call the createUser() function with user #3
-    wrapper.vm.createUser(newUser3);
-  
+    wrapper.vm.createUser(newUser3)
+
     // Wait until the DOM updates
     await flushPromises()
 
-    expect(axios.post).toHaveBeenCalledTimes(1);
+    expect(axios.post).toHaveBeenCalledTimes(1)
     expect(axios.post).toBeCalledWith('https://jsonplaceholder.typicode.com/users', newUser3)
-  
+
     expect(wrapper.vm.users.length).toEqual(2)
 
     // check that the banner message indicates failure
@@ -386,16 +391,16 @@ describe('Content.vue Test with Successful HTTP GET, Failed HTTP POST, Failed HT
       username: 'Antonette',
       email: 'Shanna@melissa.tv'
     }
-  
+
     // call the createUser() function with user #1
-    wrapper.vm.deleteUser(deleteUser2);
-  
+    wrapper.vm.deleteUser(deleteUser2)
+
     // Wait until the DOM updates
     await flushPromises()
 
-    expect(axios.delete).toHaveBeenCalledTimes(1);
+    expect(axios.delete).toHaveBeenCalledTimes(1)
     expect(axios.delete).toBeCalledWith('https://jsonplaceholder.typicode.com/users/2')
-  
+
     expect(wrapper.vm.users.length).toEqual(2)
 
     // check that the banner message indicates failure
@@ -415,16 +420,16 @@ describe('Content.vue Test with Successful HTTP GET, Failed HTTP POST, Failed HT
       username: 'Bret456',
       email: 'Sincere@april.biz'
     }
-  
+
     // call the updateUser() function with user #1
     wrapper.vm.updateUser(updateUser1)
-  
+
     // Wait until the DOM updates
     await flushPromises()
-  
+
     expect(axios.put).toHaveBeenCalledTimes(1)
     expect(axios.put).toBeCalledWith('https://jsonplaceholder.typicode.com/users/1')
-  
+
     expect(wrapper.vm.users.length).toEqual(2)
 
     // check that the banner message indicates failure
