@@ -1,6 +1,6 @@
 <template>
   <div class="content-container">
-    <app-banner v-bind:bannerMessage="messageToDisplay" v-bind:bannerType="messageType" v-on:clear-banner="clearMessage"></app-banner>
+    <app-banner></app-banner>
     <h1>List of Users:</h1>
     <br />
     <app-list-users v-bind:users="users" v-if="showUsers" v-on:delete-user="deleteUser" v-on:edit-user="editUser" v-on:cancel-edit-user="cancelEditUser" v-on:update-user="updateUser"></app-list-users>
@@ -16,6 +16,7 @@ import AddNewUser from './AddNewUser.vue'
 import Banner from './Banner.vue'
 import { onBeforeMount, onBeforeUnmount, onMounted, onUnmounted } from '@vue/runtime-core'
 import axios from 'axios'
+import { useStore } from 'vuex'
 
 export default {
   name: 'Content',
@@ -25,6 +26,7 @@ export default {
     'app-banner': Banner
   },
   setup () {
+    const store = useStore()
     const message = ref('Content goes here!')
     const users = ref([])
 
@@ -35,11 +37,6 @@ export default {
     const messageType = ref('Info')
 
     const largestUserIndex = ref(0)
-
-    const clearMessage = () => {
-      messageToDisplay.value = ''
-      messageType.value = 'Info'
-    }
 
     const createUser = (user) => {
       // Check that all fields are filled in before adding the user
@@ -57,8 +54,10 @@ export default {
         axios.post('https://jsonplaceholder.typicode.com/users', newUser)
           .then((response) => {
             // handle success
-            messageType.value = 'Success'
-            messageToDisplay.value = 'SUCCESS! User data was saved!'
+            store.dispatch('setBanner', {
+              message: 'SUCCESS! User data was saved!',
+              type: 'Success'
+            })
 
             // Add the user to the local array of users
             users.value.push(newUser)
@@ -68,8 +67,10 @@ export default {
           })
           .catch((error) => {
             // handle error
-            messageType.value = 'Error'
-            messageToDisplay.value = 'ERROR! Unable to save user data!'
+            store.dispatch('setBanner', {
+              message: 'ERROR! Unable to save user data!',
+              type: 'Error'
+            })
             console.log(error)
           })
           .finally((response) => {
@@ -91,16 +92,20 @@ export default {
       axios.delete('https://jsonplaceholder.typicode.com/users/' + user.id)
         .then((response) => {
           // handle success
-          messageType.value = 'Success'
-          messageToDisplay.value = 'SUCCESS! User #' + user.id + ' was deleted!'
+          store.dispatch('setBanner', {
+            message: 'SUCCESS! User #' + user.id + ' was deleted!',
+            type: 'Success'
+          })
 
           // Delete the user from the local array of users
           users.value.splice(userIndex, 1)
         })
         .catch((error) => {
           // handle error
-          messageType.value = 'Error'
-          messageToDisplay.value = 'ERROR! Unable to delete user #' + user.id + '!'
+          store.dispatch('setBanner', {
+            message: 'ERROR! Unable to delete user #' + user.id + '!',
+            type: 'Error'
+          })
           console.log(error)
         })
         .finally((response) => {
@@ -141,8 +146,10 @@ export default {
       axios.put('https://jsonplaceholder.typicode.com/users/' + user.id)
         .then((response) => {
           // handle success
-          messageType.value = 'Success'
-          messageToDisplay.value = 'SUCCESS! USER #' + user.id + ' was updated!'
+          store.dispatch('setBanner', {
+            message: 'SUCCESS! User #' + user.id + ' was updated!',
+            type: 'Success'
+          })
           console.log(user)
 
           // Update the user in the local array of users
@@ -153,9 +160,12 @@ export default {
         })
         .catch((error) => {
           // handle error
-          messageType.value = 'Error'
-          messageToDisplay.value = 'ERROR! Unable to update user #' + user.id + '!'
+          store.dispatch('setBanner', {
+            message: 'ERROR! Unable to update user #' + user.id + '!',
+            type: 'Error'
+          })
           console.log(error)
+
           // Update the user in the local array of users
           user.value[user.index].editing = false
         })
@@ -174,8 +184,11 @@ export default {
       axios.get('https://jsonplaceholder.typicode.com/users')
         .then((response) => {
           // handle success
-          messageType.value = 'Success'
-          messageToDisplay.value = 'SUCCESS! Loaded user data!'
+          store.dispatch('setBanner', {
+            message: 'SUCCESS! Loaded user data!',
+            type: 'Success'
+          })
+
           // console.log('Received response:')
           // console.log(response)
 
@@ -189,8 +202,10 @@ export default {
         })
         .catch((error) => {
           // handle error
-          messageType.value = 'Error'
-          messageToDisplay.value = 'Error! Unable to load user data!'
+          store.dispatch('setBanner', {
+            message: 'ERROR! Unable to load user data!',
+            type: 'Error'
+          })
           console.log(error)
         })
         .finally((response) => {
@@ -205,7 +220,7 @@ export default {
       console.log('Content.vue: onUnmounted() called!')
     })
 
-    return { message, users, createUser, showUsers, deleteListOfUsers, deleteUser, messageToDisplay, messageType, clearMessage, editUser, cancelEditUser, updateUser }
+    return { message, users, createUser, showUsers, deleteListOfUsers, deleteUser, messageToDisplay, messageType, editUser, cancelEditUser, updateUser }
   }
 
 }

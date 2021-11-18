@@ -16,6 +16,7 @@ jest.mock('axios')
 
 describe('Content.vue Test with Successful HTTP GET, POST, DELETE, and PUT', () => {
   let wrapper = null
+  let mockStore = null
 
   beforeEach(() => {
     const mock_get_response = { data: [
@@ -69,11 +70,23 @@ describe('Content.vue Test with Successful HTTP GET, POST, DELETE, and PUT', () 
     // Set the mock call to PUT to return a successful PUT response
     axios.put.mockResolvedValue(mock_put_response)
 
+    // create a mock of the Vuex store
+    mockStore = {
+      dispatch: jest.fn()
+    }
+
     // render the component
-    wrapper = shallowMount(Content)
+    wrapper = shallowMount(Content, {
+      global: {
+        provide: {
+          store: mockStore
+        }
+      }
+    })
   });
 
   afterEach(() => {
+    wrapper.unmount()
     jest.resetModules()
     jest.clearAllMocks()
   });
@@ -101,8 +114,9 @@ describe('Content.vue Test with Successful HTTP GET, POST, DELETE, and PUT', () 
     expect(wrapper.vm.users[1].email).toMatch('Shanna@melissa.tv')
 
     // check that the banner message indicates success
-    expect(wrapper.vm.messageToDisplay).toMatch('SUCCESS! Loaded user data!')
-    expect(wrapper.vm.messageType).toMatch('Success')
+    expect(mockStore.dispatch.mock.calls).toHaveLength(1)
+    expect(mockStore.dispatch.mock.calls[0][0]).toEqual('setBanner')
+    expect(mockStore.dispatch.mock.calls[0][1]).toEqual({ message: 'SUCCESS! Loaded user data!', type: 'Success' })
   })
 
   it('save the new user data', async () => {
@@ -125,8 +139,13 @@ describe('Content.vue Test with Successful HTTP GET, POST, DELETE, and PUT', () 
     expect(axios.post).toBeCalledWith('https://jsonplaceholder.typicode.com/users', newUser3)
   
     expect(wrapper.vm.users.length).toEqual(3)
-    expect(wrapper.vm.messageType).toMatch('Success')
-    expect(wrapper.vm.messageToDisplay).toMatch('SUCCESS! User data was saved!')
+
+    // check that the banner message indicates success
+    expect(mockStore.dispatch.mock.calls).toHaveLength(2)
+    expect(mockStore.dispatch.mock.calls[0][0]).toEqual('setBanner')
+    expect(mockStore.dispatch.mock.calls[0][1]).toEqual({ message: 'SUCCESS! Loaded user data!', type: 'Success' })
+    expect(mockStore.dispatch.mock.calls[1][0]).toEqual('setBanner')
+    expect(mockStore.dispatch.mock.calls[1][1]).toEqual({ message: 'SUCCESS! User data was saved!', type: 'Success' })
   })
 
   it('deletes the user #2 data', async () => {
@@ -148,8 +167,13 @@ describe('Content.vue Test with Successful HTTP GET, POST, DELETE, and PUT', () 
     expect(axios.delete).toBeCalledWith('https://jsonplaceholder.typicode.com/users/2')
   
     expect(wrapper.vm.users.length).toEqual(1)
-    expect(wrapper.vm.messageType).toMatch('Success')
-    expect(wrapper.vm.messageToDisplay).toMatch('SUCCESS! User #2 was deleted!')
+
+    // check that the banner message indicates success
+    expect(mockStore.dispatch.mock.calls).toHaveLength(2)
+    expect(mockStore.dispatch.mock.calls[0][0]).toEqual('setBanner')
+    expect(mockStore.dispatch.mock.calls[0][1]).toEqual({ message: 'SUCCESS! Loaded user data!', type: 'Success' })
+    expect(mockStore.dispatch.mock.calls[1][0]).toEqual('setBanner')
+    expect(mockStore.dispatch.mock.calls[1][1]).toEqual({ message: 'SUCCESS! User #2 was deleted!', type: 'Success' })
   })
 
   it('updates the data for user #1', async () => {
@@ -173,8 +197,13 @@ describe('Content.vue Test with Successful HTTP GET, POST, DELETE, and PUT', () 
     expect(axios.put).toBeCalledWith('https://jsonplaceholder.typicode.com/users/1')
   
     expect(wrapper.vm.users.length).toEqual(2)
-    expect(wrapper.vm.messageType).toMatch('Success')
-    expect(wrapper.vm.messageToDisplay).toMatch('SUCCESS! User #1 was updated!')
+
+    // check that the banner message indicates success
+    expect(mockStore.dispatch.mock.calls).toHaveLength(2)
+    expect(mockStore.dispatch.mock.calls[0][0]).toEqual('setBanner')
+    expect(mockStore.dispatch.mock.calls[0][1]).toEqual({ message: 'SUCCESS! Loaded user data!', type: 'Success' })
+    expect(mockStore.dispatch.mock.calls[1][0]).toEqual('setBanner')
+    expect(mockStore.dispatch.mock.calls[1][1]).toEqual({ message: 'SUCCESS! User #1 was updated!', type: 'Success' })
   })
 
   it('changes user to edit-mode', () => {
@@ -219,13 +248,25 @@ describe('Content.vue Test with Successful HTTP GET, POST, DELETE, and PUT', () 
 
 describe('Content.vue Test with Failed HTTP GET', () => {
   let wrapper = null
+  let mockStore = null
 
   beforeEach(() => {
     // Set the mock call to GET to return a failed GET request
     axios.get.mockRejectedValue(new Error('BAD REQUEST'))
 
+    // create a mock of the Vuex store
+    mockStore = {
+      dispatch: jest.fn()
+    }
+
     // Render the component
-    wrapper = shallowMount(Content)
+    wrapper = shallowMount(Content, {
+      global: {
+        provide: {
+          store: mockStore
+        }
+      }
+    })
   })
 
   afterEach(() => {
@@ -245,13 +286,15 @@ describe('Content.vue Test with Failed HTTP GET', () => {
     expect(wrapper.vm.users.length).toEqual(0)
 
     // check that the banner message indicates failure
-    expect(wrapper.vm.messageToDisplay).toMatch('ERROR! Unable to load user data!')
-    expect(wrapper.vm.messageType).toMatch('Error')
+    expect(mockStore.dispatch.mock.calls).toHaveLength(1)
+    expect(mockStore.dispatch.mock.calls[0][0]).toEqual('setBanner')
+    expect(mockStore.dispatch.mock.calls[0][1]).toEqual({ message: 'ERROR! Unable to load user data!', type: 'Error' })
   })
 })
 
 describe('Content.vue Test with Successful HTTP GET, Failed HTTP POST, Failed HTTP DELETE, and Failed HTTP PUT', () => {
   let wrapper = null
+  let mockStore = null
 
   beforeEach(() => {
     const mock_get_response = { data: [
@@ -281,11 +324,23 @@ describe('Content.vue Test with Successful HTTP GET, Failed HTTP POST, Failed HT
     // Set the mock call to PUT to return a failed PUT request
     axios.put.mockRejectedValue(new Error('BAD PUT'))
 
+    // create a mock of the Vuex store
+    mockStore = {
+      dispatch: jest.fn()
+    }
+
     // render the component
-    wrapper = shallowMount(Content)
+    wrapper = shallowMount(Content, {
+      global: {
+        provide: {
+          store: mockStore
+        }
+      }
+    })
   });
 
   afterEach(() => {
+    wrapper.unmount()
     jest.resetModules()
     jest.clearAllMocks()
   });
@@ -314,8 +369,13 @@ describe('Content.vue Test with Successful HTTP GET, Failed HTTP POST, Failed HT
     expect(axios.post).toBeCalledWith('https://jsonplaceholder.typicode.com/users', newUser3)
   
     expect(wrapper.vm.users.length).toEqual(2)
-    expect(wrapper.vm.messageType).toMatch('Error')
-    expect(wrapper.vm.messageToDisplay).toMatch('ERROR! Unable to save user data!')
+
+    // check that the banner message indicates failure
+    expect(mockStore.dispatch.mock.calls).toHaveLength(2)
+    expect(mockStore.dispatch.mock.calls[0][0]).toEqual('setBanner')
+    expect(mockStore.dispatch.mock.calls[0][1]).toEqual({ message: 'SUCCESS! Loaded user data!', type: 'Success' })
+    expect(mockStore.dispatch.mock.calls[1][0]).toEqual('setBanner')
+    expect(mockStore.dispatch.mock.calls[1][1]).toEqual({ message: 'ERROR! Unable to save user data!', type: 'Error' })
   })
 
   it('does not delete the user data on failed HTTP DELETE call', async () => {
@@ -337,8 +397,13 @@ describe('Content.vue Test with Successful HTTP GET, Failed HTTP POST, Failed HT
     expect(axios.delete).toBeCalledWith('https://jsonplaceholder.typicode.com/users/2')
   
     expect(wrapper.vm.users.length).toEqual(2)
-    expect(wrapper.vm.messageType).toMatch('Error')
-    expect(wrapper.vm.messageToDisplay).toMatch('ERROR! Unable to delete user #2')
+
+    // check that the banner message indicates failure
+    expect(mockStore.dispatch.mock.calls).toHaveLength(2)
+    expect(mockStore.dispatch.mock.calls[0][0]).toEqual('setBanner')
+    expect(mockStore.dispatch.mock.calls[0][1]).toEqual({ message: 'SUCCESS! Loaded user data!', type: 'Success' })
+    expect(mockStore.dispatch.mock.calls[1][0]).toEqual('setBanner')
+    expect(mockStore.dispatch.mock.calls[1][1]).toEqual({ message: 'ERROR! Unable to delete user #2!', type: 'Error' })
   })
 
   it('does not update the user data on failed HTTP PUT call', async () => {
@@ -361,7 +426,12 @@ describe('Content.vue Test with Successful HTTP GET, Failed HTTP POST, Failed HT
     expect(axios.put).toBeCalledWith('https://jsonplaceholder.typicode.com/users/1')
   
     expect(wrapper.vm.users.length).toEqual(2)
-    expect(wrapper.vm.messageType).toMatch('Error')
-    expect(wrapper.vm.messageToDisplay).toMatch('ERROR! Unable to update user #1')
+
+    // check that the banner message indicates failure
+    expect(mockStore.dispatch.mock.calls).toHaveLength(2)
+    expect(mockStore.dispatch.mock.calls[0][0]).toEqual('setBanner')
+    expect(mockStore.dispatch.mock.calls[0][1]).toEqual({ message: 'SUCCESS! Loaded user data!', type: 'Success' })
+    expect(mockStore.dispatch.mock.calls[1][0]).toEqual('setBanner')
+    expect(mockStore.dispatch.mock.calls[1][1]).toEqual({ message: 'ERROR! Unable to update user #1!', type: 'Error' })
   })
 })

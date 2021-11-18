@@ -7,31 +7,32 @@
 
 <script>
 import { computed } from '@vue/runtime-core'
+import { useStore } from 'vuex'
 
 export default {
   name: 'Banner',
-  props: {
-    // Banner message to display to the user
-    bannerMessage: String,
-    // Banner Types: Info, Error, or Success
-    bannerType: String
-  },
-  setup (props, context) {
+  setup () {
+    const store = useStore()
+
     const bannerBackgroundColor = computed(() => {
-      if (props.bannerType === 'Error') {
+      if (store.getters.getBannerType === 'Error') {
         return 'red'
-      } else if (props.bannerType === 'Success') {
+      } else if (store.getters.getBannerType === 'Success') {
         return 'green'
       } else {
         return 'blue'
       }
     })
 
+    const bannerMessage = computed(() => {
+      return store.getters.getBannerMessage
+    })
+
     const clearBannerMessage = () => {
-      context.emit('clear-banner')
+      store.dispatch('setBanner', { message: '', type: 'Info' })
     }
 
-    return { bannerBackgroundColor, clearBannerMessage }
+    return { bannerBackgroundColor, bannerMessage, clearBannerMessage }
   }
 }
 

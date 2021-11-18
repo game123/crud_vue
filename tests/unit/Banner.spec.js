@@ -3,24 +3,33 @@ import Banner from '@/components/Banner.vue'
 
 describe('Banner.vue Test', () => {
   let wrapper = null
-
-  // SETUP - run prior to each unit test
-  beforeEach(() => {
-    // Render the component
-    wrapper = shallowMount(Banner, {
-      propsData: {
-        bannerMessage: '',
-        bannerType: ''
-      }
-    })
-  })
+  let mockStore = null
 
   // TEARDOW - run after to each unit test
   afterEach(() => {
     wrapper.unmount()
+    jest.resetModules()
+    jest.clearAllMocks()
   })
 
   it('initializes with correct elements', () => {
+    // create a mock of the Vuex store
+    mockStore = {
+      dispatch: jest.fn(),
+      getters: {
+        getBannerMessage: '',
+        getBannerType: 'Info'
+      }
+    }
+
+    wrapper = shallowMount(Banner, {
+      global: {
+        provide: {
+          store: mockStore
+        }
+      }
+    })
+
     // check that the banner message is initialzed to an empty string
     const banner = wrapper.find('#bannerMsg')
     expect(banner.text()).toMatch('')
@@ -29,10 +38,22 @@ describe('Banner.vue Test', () => {
   })
 
   it('initializes with error message', async () => {
-    // set the prop data to display an error message
-    await wrapper.setProps({
-      bannerMessage: 'Banner message 123',
-      bannerType: 'Error'
+    // create a mock of the Vuex store
+    mockStore = {
+      dispatch: jest.fn(),
+      getters: {
+        getBannerMessage: 'Banner message 123',
+        getBannerType: 'Error'
+      }
+    }
+
+    // render the component
+    wrapper = shallowMount(Banner, {
+      global: {
+        provide: {
+          store: mockStore
+        }
+      }
     })
 
     // check that the banner message displays the error message
@@ -42,11 +63,23 @@ describe('Banner.vue Test', () => {
     expect(banner.attributes().style).toMatch('background-color: red;')
   })
 
-  it('initializes with success message', async () => {
-    // set the prop data to display a success message
-    await wrapper.setProps({
-      bannerMessage: 'Banner message 456',
-      bannerType: 'Success'
+  it('initializes with success message', () => {
+    // create a mock of the Vuex store
+    mockStore = {
+      dispatch: jest.fn(),
+      getters: {
+        getBannerMessage: 'Banner message 456',
+        getBannerType: 'Success'
+      }
+    }
+
+    // render the component
+    wrapper = shallowMount(Banner, {
+      global: {
+        provide: {
+          store: mockStore
+        }
+      }
     })
 
     // check that the banner message displays the success message
@@ -56,11 +89,23 @@ describe('Banner.vue Test', () => {
     expect(banner.attributes().style).toMatch('background-color: green;')
   })
 
-  it('initializes with info message', async () => {
-    // set the prop data to display an info message
-    await wrapper.setProps({
-      bannerMessage: 'Banner message 789',
-      bannerType: 'Info'
+  it('initializes with info message', () => {
+    // create a mock of the Vuex store
+    mockStore = {
+      dispatch: jest.fn(),
+      getters: {
+        getBannerMessage: 'Banner message 789',
+        getBannerType: 'Info'
+      }
+    }
+
+    // render the component
+    wrapper = shallowMount(Banner, {
+      global: {
+        provide: {
+          store: mockStore
+        }
+      }
     })
 
     // check that the banner message displays the info message
@@ -70,18 +115,31 @@ describe('Banner.vue Test', () => {
     expect(banner.attributes().style).toMatch('background-color: blue;')
   })
 
-  it('emits an event when the clear button is clicked', async () => {
-    // set the prop data to display an error message
-    await wrapper.setProps({
-      bannerMessage: 'Banner message 123',
-      bannerType: 'Error'
+  it('clears an event when the clear button is clicked', async () => {
+    // create a mock of the Vuex store
+    mockStore = {
+      dispatch: jest.fn(),
+      getters: {
+        getBannerMessage: 'Banner message 789',
+        getBannerType: 'Info'
+      }
+    }
+
+    // render the component
+    wrapper = shallowMount(Banner, {
+      global: {
+        provide: {
+          store: mockStore
+        }
+      }
     })
 
     // trigger an event when the 'Clear' button is clicked
     await wrapper.find('span').trigger('click')
 
     // check that 1 occurrence of the event has been emitted
-    expect(wrapper.emitted('clear-banner')).toBeTruthy()
-    expect(wrapper.emitted('clear-banner').length).toBe(1)
+    expect(mockStore.dispatch.mock.calls).toHaveLength(1)
+    expect(mockStore.dispatch.mock.calls[0][0]).toEqual('setBanner')
+    expect(mockStore.dispatch.mock.calls[0][1]).toEqual({ message: '', type: 'Info' })
   })
 })
