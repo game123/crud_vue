@@ -1,4 +1,3 @@
-/* eslint-disable eol-last */
 import { mount } from '@vue/test-utils'
 import router from '@/router/index'
 import App from '@/App.vue'
@@ -39,7 +38,7 @@ describe('App.vue Test', () => {
     wrapper = mount(App, {
       global: {
         plugins: [router],
-        provider: {
+        provide: {
           store: mockStore
         }
       }

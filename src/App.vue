@@ -23,7 +23,7 @@ export default {
   },
   setup () {
     const title = ref('Vue Project')
-    const footer = ref('TestDriven.io 2021')
+    const footer = ref('Test.io 2021')
 
     onBeforeMount(() => {
       console.log('App.vue: onBeforeMount() called!')
